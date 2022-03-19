@@ -30,9 +30,18 @@ from triplet_loss import TripletLoss, CrossEntropyLabelSmooth
 # Options
 # --------
 
-gpu_ids = '0'
-name = 'ft_net_54922'
-data_dir = '/home/pt/下载/Market/pytorch'
+parser = argparse.ArgumentParser(description="ReID Baseline Training")
+parser.add_argument(
+    "--gpu_id", default="0", type=str, help="use gpu index",
+)
+parser.add_argument("--data_name", help="train with which dataset", default='Market')
+parser.add_argument("--lab_name", help="train with which dataset", default='Market')
+
+args = parser.parse_args()
+
+gpu_ids = args.gpu_id
+name = f'{args.data_name}/{args.lab_name}'
+data_dir = f'/mnt/WXRC0020/users/weidong.shi/Datasets/{args.data_name}/pytorch'
 train_all_1 = 'True'
 batchsize = 32 
 erasing_p = 0.5
@@ -57,11 +66,11 @@ if len(gpu_ids)>0:
 #
 
 transform_train_list = [
-        transforms.Resize([288, 144]),
-        #transforms.RandomCrop((256,128)),
+        transforms.Resize([256, 128]),
+        # transforms.RandomCrop((256,128)),
         transforms.RandomHorizontalFlip(0.5),
         transforms.Pad(10),
-        transforms.RandomCrop([288, 144]),
+        transforms.RandomCrop([256, 128]),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ]
@@ -201,7 +210,7 @@ def train_model(model, criterion,triplet, num_epochs):
                 if int(version[2]) > 3: # for the new version like 0.4.0 and 0.5.0
                     running_loss += loss.item() * now_batch_size
                 else :  # for the old version like 0.3.0 and 0.3.1
-                    running_loss += loss.data[0] * now_batch_size
+                    running_loss += loss.item() * now_batch_size
                 a = float(torch.sum(preds1 == labels.data))
                 b = float(torch.sum(preds2 == labels.data))
                 c = float(torch.sum(preds3 == labels.data))

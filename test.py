@@ -20,13 +20,26 @@ from model import ft_net
 
 ######################################################################
 # Options
-# --------
-gpu_ids = '0'
-which_epoch =223
-test_dir = '/home/pt/下载/Market/pytorch'
-name = 'ft_net_54922'
-batchsize = 32
+# -------
 
+parser = argparse.ArgumentParser(description="ReID Baseline Training")
+parser.add_argument(
+    "--gpu_id", default="0", type=str, help="use gpu index",
+)
+parser.add_argument("--data_name", help="train with which dataset", default='Market')
+parser.add_argument("--which_epoch", help="test with which training model pth", default=219, type=int)
+parser.add_argument("--batch_size", help="batch_size", default=32, type=int)
+
+args = parser.parse_args()
+
+gpu_ids = args.gpu_id
+which_epoch = args.which_epoch
+test_dir = f'/mnt/WXRC0020/users/weidong.shi/Datasets/{args.data_name}/pytorch'
+name = 'ft_net_54922'
+batchsize = args.batch_size
+
+cls_nums_dict = {'Market':751, "Duke":702, 'MA-D':751, 'D-MA':702}
+cls_num = cls_nums_dict[args.data_name]
 
 str_ids = gpu_ids.split(',')
 #which_epoch = opt.which_epoch
@@ -51,7 +64,7 @@ if len(gpu_ids)>0:
 # data.
 #
 data_transforms = transforms.Compose([
-        transforms.Resize((288,144)),
+        transforms.Resize((256,128)),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ############### Ten Crop        
@@ -149,7 +162,7 @@ query_cam,query_label = get_id(query_path)
 print('-------test-----------')
 #model_structure =ft_net_middle(751)
 #model_structure = ft_net_50_1(751)
-model_structure =ft_net(751,True)
+model_structure =ft_net(cls_num,True)
 model = load_network(model_structure)
 
 # Remove the final fc layer and classifier layer
