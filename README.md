@@ -2,13 +2,14 @@
 
 1:prepare.py
 
-2:train_11.py
-
-3:test.py
-
-4:evaluate_gpu.py
-
-
+# train market-1501 dataset
+2:bash train_market.sh
+# train dukemtmc dataset
+3:bash train_duke.sh
+# test market-1501 dataset
+4:bash test_market.sh
+# test dukemtmc dataset
+5:bash test_duke.sh
 
 Market 1501
 
