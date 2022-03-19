@@ -1,5 +1,5 @@
  Re-ID
-
+# 数据集准备
 1:prepare.py
 
 # train market-1501 dataset
